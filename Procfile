@@ -1,1 +1,2 @@
-web: node .\server.js
+web: npm install -y
+web: node server.js
