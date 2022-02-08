@@ -23,14 +23,10 @@ it('Draw button displays the div with id = “choices”', async () => {
 })
 
 it('“Add to Duo” button displays the div with id = “player-id”', async () => {
-    // await driver.findElement(By.css('#draw')).click()
+    await driver.findElement(By.css('#draw')).click()
     const playerId = await driver.findElement(By.id('player-duo'))
     const displayed = await playerId.isDisplayed()
     expect(displayed)
-})
-
-it('Bot “Removed from Duo” goes back to “choices”', async () => {
-    
 })
 
 afterAll(async () => {

@@ -6,14 +6,23 @@ const {shuffleArray} = require('./utils')
 
 app.use(express.json())
 
-// app.use(express.static('./public/index.html'))
-// app.use(express.static(''))
+// include and initialize the rollbar library with your access token
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '3484ad4cbed4459b9d22ace2d5f5cf75',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
 
 app.get('/', (req, res) => {
     try {
         res.status(200).sendFile(path.join(__dirname, 'public/index.html'))
+        rollbar.log('New site visitor')
     } catch (error) {
-        console.log('Home page missing', error)
+        rollbar.log('Home page missing', error)
         res.sendStatus(404)
     }
 })
@@ -22,7 +31,7 @@ app.get('/js', (req, res) => {
     try {
         res.status(200).sendFile(path.join(__dirname, 'public/index.js'))
     } catch (error) {
-        console.log('Index.js missing', error)
+        rollbar.log('Index.js missing', error)
         res.sendStatus(404)
     }
 })
@@ -31,7 +40,7 @@ app.get('/styles', (req, res) => {
     try {
         res.status(200).sendFile(path.join(__dirname, 'public/index.css'))
     } catch (error) {
-        console.log('Index.css missing', error)
+        rollbar.log('Index.css missing', error)
         res.sendStatus(404)
     }
 })
@@ -40,7 +49,7 @@ app.get('/api/robots', (req, res) => {
     try {
         res.status(200).send(botsArr)
     } catch (error) {
-        console.log('ERROR GETTING BOTS', error)
+        rollbar.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
     }
 })
@@ -51,8 +60,9 @@ app.get('/api/robots/five', (req, res) => {
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({choices, compDuo})
+        rollbar.log('Deck shuffled')
     } catch (error) {
-        console.log('ERROR GETTING FIVE BOTS', error)
+        rollbar.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
     }
 })
@@ -82,8 +92,9 @@ app.post('/api/duel', (req, res) => {
             playerRecord.losses++
             res.status(200).send('You won!')
         }
+        rollbar.log('Duel successful')
     } catch (error) {
-        console.log('ERROR DUELING', error)
+        rollbar.log('ERROR DUELING', error)
         res.sendStatus(400)
     }
 })
@@ -92,7 +103,7 @@ app.get('/api/player', (req, res) => {
     try {
         res.status(200).send(playerRecord)
     } catch (error) {
-        console.log('ERROR GETTING PLAYER STATS', error)
+        rollbar.log('ERROR GETTING PLAYER STATS', error)
         res.sendStatus(400)
     }
 })
